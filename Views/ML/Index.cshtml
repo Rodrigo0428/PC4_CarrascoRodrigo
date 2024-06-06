@@ -1,0 +1,168 @@
+@{
+    ViewData["Title"] = "Análisis de Recomendaciones";
+    var ratings = ViewData["ratings"] as List<(int productoId, float normalizedScore)>;
+    var trendingProductos = ViewData["trendingproductos"] as List<PC4.Models.Producto>;
+}
+
+<h1>@ViewData["Title"]</h1>
+ <title>Productos</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+
+
+ <table>
+    <thead>
+      <tr>
+        <th>ProductoId</th>
+        <th>ProductoNombre</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Big Mac</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Whopper</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Pollo Frito</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Taco</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Rebanada de Pizza</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Sándwich Submarino</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Papas Fritas</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Perro Caliente</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>Nuggets de Pollo</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>Sándwich de Pescado</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Obtener Recomendaciones de Productos</h2>
+  <form asp-controller="ML" asp-action="Predict" method="post">
+    <div class="form-group">
+      <label for="id">Escribe el Id del usuario</label>
+      <input type="text" class="form-control" id="id" name="id" />
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+
+  @if (ratings != null && ratings.Count > 0)
+  {
+    <h2>Análisis de Recomendaciones</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto ID</th>
+          <th>Producto Nombre</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var rating in ratings)
+        {
+          var producto = trendingProductos.FirstOrDefault(p => p.ProductoId == rating.productoId);
+          <tr>
+            <td>@rating.productoId</td>
+            <td>@producto?.ProductoNombre</td>
+            <td>@(float.IsNaN(rating.normalizedScore) ? "No Disponible" : rating.normalizedScore.ToString("F2"))</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+  else
+  {
+    <p class="no-recommendations">No hay recomendaciones para mostrar.</p>
+  }
+
+
+
+
+ <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    .no-recommendations {
+      color: #999;
+    }
+  </style>
